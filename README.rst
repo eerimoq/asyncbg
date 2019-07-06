@@ -55,7 +55,7 @@ in it (up to two coroutines in parallel).
        pass
 
    async def main():
-       pool = asyncbg.WorkerPool()
+       pool = asyncbg.WorkerPool(2)
        await asyncio.gather(pool.run(work()),
                             pool.run(work()),
                             pool.run(work()))
