@@ -6,6 +6,9 @@ Asyncio background tasks
 
 Asyncio background tasks in Python 3.7 and later.
 
+Run CPU intensive long running tasks without blocking the asyncio
+loop.
+
 Project homepage: https://github.com/eerimoq/asyncbg
 
 Documentation: https://asyncbg.readthedocs.org/en/latest
