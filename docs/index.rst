@@ -14,6 +14,6 @@ Asyncio background tasks
 Functions and classes
 =====================
 
-.. autofunction:: asyncbg.run
+.. autofunction:: asyncbg.call
 
 .. autoclass:: asyncbg.WorkerPool
