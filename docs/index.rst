@@ -15,3 +15,5 @@ Functions and classes
 =====================
 
 .. autofunction:: asyncbg.run
+
+.. autoclass:: asyncbg.WorkerPool

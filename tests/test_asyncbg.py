@@ -25,6 +25,18 @@ class AsyncbgTest(unittest.TestCase):
         with self.assertRaises(Exception):
             await asyncbg.run(main())
 
+    def test_worker_pool(self):
+        asyncio.run(self.worker_pool())
+
+    async def worker_pool(self):
+        pool = asyncbg.WorkerPool()
+
+        async def main(value):
+            return value
+
+        for i in range(10):
+            self.assertEqual(await pool.run(main(i)), i)
+
 
 if __name__ == '__main__':
     unittest.main()
