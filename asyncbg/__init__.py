@@ -36,6 +36,14 @@ class WorkerPool:
         Returns the value returned by the coroutine, or raises the
         exceptions raised by the coroutine.
 
+        Run ``main()`` in a worker pool:
+
+        >>> async def main():
+        >>>     pass
+        >>>
+        >>> pool = asyncbg.WorkerPool()
+        >>> asyncio.run(pool.run(main()))
+
         """
 
         worker = await self._workers.get()
@@ -73,6 +81,13 @@ async def run(coro, worker=None):
     exceptions raised by the coroutine.
 
     This functions is thread safe.
+
+    Run ``main()`` in the default worker thread:
+
+    >>> async def main():
+    >>>     pass
+    >>>
+    >>> asyncio.run(asyncbg.run(main()))
 
     """
 
