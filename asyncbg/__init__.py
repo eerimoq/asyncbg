@@ -52,7 +52,7 @@ class WorkerPool:
         Returns the value returned by the callback, or raises the
         exceptions raised by the coroutine.
 
-        Run ``work()`` in a worker pool:
+        Call ``work()`` in a worker pool:
 
         >>> def work():
         >>>     pass
@@ -84,7 +84,7 @@ async def call(callback, worker=None):
 
     This functions is thread safe.
 
-    Run ``work()`` in the default worker thread:
+    Call ``work()`` in the default worker thread:
 
     >>> def work():
     >>>     pass
