@@ -86,7 +86,7 @@ async def call(callback, worker=None):
 
     Run ``work()`` in the default worker thread:
 
-    >>> async def work():
+    >>> def work():
     >>>     pass
     >>>
     >>> asyncio.run(asyncbg.call(work()))
