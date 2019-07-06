@@ -1,106 +1,51 @@
-import threading
-from queue import Queue
 import asyncio
+import concurrent.futures
 
 from .version import __version__
 
 
-class Worker(threading.Thread):
-
-    def __init__(self):
-        super().__init__()
-        self.queue = Queue()
-        
-    def run(self):
-        while True:
-            callback, loop, queue = self.queue.get()
-
-            try:
-                result = callback()
-                exception = None
-            except Exception as e:
-                result = None
-                exception = e
-
-            asyncio.run_coroutine_threadsafe(queue.put((result, exception)),
-                                             loop)
-
-
-def create_worker():
-    worker = Worker()
-    worker.daemon = True
-    worker.start()
-
-    return worker
-
-
-class WorkerPool:
-    """The worker pool may only be used from a single asyncio loop. It is
-    *not* thread safe.
+class ThreadPoolExecutor(concurrent.futures.ThreadPoolExecutor):
+    """Same as ``concurrent.futures.ThreadPoolExecutor``, but with the
+    ``call()`` method added.
 
     """
 
-    def __init__(self, number_of_workers=4):
-        self._workers = asyncio.Queue()
-
-        for _ in range(number_of_workers):
-            self._workers.put_nowait(create_worker())
-
-    async def call(self, callback):
-        """Call given callback in the worker pool when a worker is available.
+    async def call(self, callback, *args, **kwargs):
+        """Call given callback with given arguments in the worker pool when a
+        worker is available.
 
         Returns the value returned by the callback, or raises the
-        exceptions raised by the coroutine.
+        exceptions raised by the callback.
 
         Call ``work()`` in a worker pool:
 
         >>> def work():
         >>>     pass
         >>>
-        >>> pool = asyncbg.WorkerPool()
+        >>> pool = asyncbg.ThreadPoolExecutor()
         >>> asyncio.run(pool.call(work))
 
         """
 
-        worker = await self._workers.get()
-
-        try:
-            result = await call(callback, worker)
-        finally:
-            await self._workers.put(worker)
-
-        return result
+        return await asyncio.wrap_future(self.submit(callback, *args, **kwargs))
 
 
-_DEFAULT_WORKER = create_worker()
+_DEFAULT_POOL = ThreadPoolExecutor()
 
 
-async def call(callback, worker=None):
-    """Call given callback in given worker thread, or the default worker
-    thread if no worker thread is given.
+async def call(callback, *args, **kwargs):
+    """Call given callback with given arguments in a worker thread.
 
     Returns the value returned by the callback, or raises the
     exceptions raised by the callback.
 
-    This functions is thread safe.
-
-    Call ``work()`` in the default worker thread:
+    Call ``work()`` in a worker thread:
 
     >>> def work():
     >>>     pass
     >>>
-    >>> asyncio.run(asyncbg.call(work()))
+    >>> asyncio.run(asyncbg.call(work))
 
     """
 
-    if worker is None:
-        worker = _DEFAULT_WORKER
-
-    queue = asyncio.Queue()
-    worker.queue.put((callback, asyncio.get_event_loop(), queue))
-    result, exception = await queue.get()
-
-    if exception is not None:
-        raise exception
-
-    return result
+    return await _DEFAULT_POOL.call(callback, *args, **kwargs)

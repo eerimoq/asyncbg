@@ -23,12 +23,12 @@ Installation
 Examples
 ========
 
-There are plenty of examples in the `examples folder`_.
+There are more examples in the `examples folder`_.
 
-Default worker
---------------
+Call
+----
 
-Call ``work()`` in the default worker thread.
+Call ``work()`` in a worker thread.
 
 .. code-block:: python
 
@@ -40,11 +40,11 @@ Call ``work()`` in the default worker thread.
 
    asyncio.run(asyncbg.call(work))
 
-Worker pool
------------
+Thread pool executor
+--------------------
 
-Create a worker pool with two worker threads, and call ``work()``
-three times in it (up to two callbacks called in parallel).
+Create a thread pool executor with two worker threads, and call
+``work()`` three times in it (up to two callbacks called in parallel).
 
 .. code-block:: python
 
@@ -55,7 +55,7 @@ three times in it (up to two callbacks called in parallel).
        pass
 
    async def main():
-       pool = asyncbg.WorkerPool(2)
+       pool = asyncbg.ThreadPoolExecutor(max_workers=2)
        await asyncio.gather(pool.call(work),
                             pool.call(work),
                             pool.call(work))

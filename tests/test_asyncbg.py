@@ -1,6 +1,5 @@
 import asyncio
 import unittest
-from functools import partial
 
 import asyncbg
 
@@ -26,17 +25,17 @@ class AsyncbgTest(unittest.TestCase):
         with self.assertRaises(Exception):
             await asyncbg.call(work)
 
-    def test_worker_pool(self):
-        asyncio.run(self.worker_pool())
+    def test_thread_pool_executor(self):
+        asyncio.run(self.thread_pool_executor())
 
-    async def worker_pool(self):
-        pool = asyncbg.WorkerPool()
+    async def thread_pool_executor(self):
+        pool = asyncbg.ThreadPoolExecutor()
 
         def work(value):
             return value
 
         for i in range(10):
-            self.assertEqual(await pool.call(partial(work, i)), i)
+            self.assertEqual(await pool.call(work, i), i)
 
 
 if __name__ == '__main__':
