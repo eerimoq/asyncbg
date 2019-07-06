@@ -25,6 +25,8 @@ There are plenty of examples in the `examples folder`_.
 Run
 ---
 
+Run ``main()`` in a worker thread.
+
 .. code-block:: python
 
    import asyncio
