@@ -1,4 +1,5 @@
 import threading
+from queue import Queue
 import asyncio
 
 from .version import __version__
@@ -6,17 +7,27 @@ from .version import __version__
 
 class Worker(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, queue):
         super().__init__()
-        self.loop = asyncio.new_event_loop()
-
+        self.queue = queue
+        
     def run(self):
-        asyncio.set_event_loop(self.loop)
-        self.loop.run_forever()
+        while True:
+            callback, loop, queue = self.queue.get()
+
+            try:
+                result = callback()
+                exception = None
+            except Exception as e:
+                result = None
+                exception = e
+
+            asyncio.run_coroutine_threadsafe(queue.put((result, exception)),
+                                             loop)
 
 
 def create_worker():
-    worker = Worker()
+    worker = Worker(Queue())
     worker.daemon = True
     worker.start()
 
@@ -35,71 +46,58 @@ class WorkerPool:
         for _ in range(number_of_workers):
             self._workers.put_nowait(create_worker())
 
-    async def run(self, coro):
-        """Run given coroutine in the worker pool when a worker is available.
+    async def call(self, callback):
+        """Call given callback in the worker pool when a worker is available.
 
-        Returns the value returned by the coroutine, or raises the
+        Returns the value returned by the callback, or raises the
         exceptions raised by the coroutine.
 
-        Run ``main()`` in a worker pool:
+        Run ``work()`` in a worker pool:
 
-        >>> async def main():
+        >>> def work():
         >>>     pass
         >>>
         >>> pool = asyncbg.WorkerPool()
-        >>> asyncio.run(pool.run(main()))
+        >>> asyncio.run(pool.call(work))
 
         """
 
         worker = await self._workers.get()
 
         try:
-            result = await run(coro, worker)
+            result = await call(callback, worker)
         finally:
             await self._workers.put(worker)
 
         return result
 
 
-# The default worker.
-WORKER = create_worker()
+_DEFAULT_WORKER = create_worker()
 
 
-async def _wrapper(coro, loop, queue):
-    try:
-        result = await coro
-        exception = None
-    except Exception as e:
-        result = None
-        exception = e
-
-    asyncio.run_coroutine_threadsafe(queue.put((result, exception)), loop)
-
-
-async def run(coro, worker=None):
-    """Run given coroutine in given worker thread, or the default worker
+async def call(callback, worker=None):
+    """Call given callback in given worker thread, or the default worker
     thread if no worker thread is given.
 
-    Returns the value returned by the coroutine, or raises the
-    exceptions raised by the coroutine.
+    Returns the value returned by the callback, or raises the
+    exceptions raised by the callback.
 
     This functions is thread safe.
 
-    Run ``main()`` in the default worker thread:
+    Run ``work()`` in the default worker thread:
 
-    >>> async def main():
+    >>> async def work():
     >>>     pass
     >>>
-    >>> asyncio.run(asyncbg.run(main()))
+    >>> asyncio.run(asyncbg.call(work()))
 
     """
 
     if worker is None:
-        worker = WORKER
+        worker = _DEFAULT_WORKER
 
     queue = asyncio.Queue()
-    wrapper = _wrapper(coro, asyncio.get_event_loop(), queue)
-    asyncio.run_coroutine_threadsafe(wrapper, worker.loop)
+    worker.queue.put((callback, asyncio.get_event_loop(), queue))
     result, exception = await queue.get()
 
     if exception is not None:

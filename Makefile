@@ -4,7 +4,7 @@ test:
 	python3 setup.py test
 
 examples:
-	env PYTHONPATH=. python3 examples/run.py
+	env PYTHONPATH=. python3 examples/call.py
 	env PYTHONPATH=. python3 examples/pool.py
 
 release-to-pypi:

@@ -3,7 +3,7 @@ import asyncio
 import asyncbg
 
 
-async def background_work():
+def background_work():
     print('Background sleep for 3 seconds.')
     time.sleep(3)
     print('Background sleep done.')
@@ -18,11 +18,11 @@ async def foreground_work():
 
 async def main():
     pool = asyncbg.WorkerPool()
-    await asyncio.gather(pool.run(background_work()),
-                         pool.run(background_work()),
-                         pool.run(background_work()),
-                         pool.run(background_work()),
-                         pool.run(background_work()),
+    await asyncio.gather(pool.call(background_work),
+                         pool.call(background_work),
+                         pool.call(background_work),
+                         pool.call(background_work),
+                         pool.call(background_work),
                          foreground_work())
 
 

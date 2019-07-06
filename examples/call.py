@@ -3,7 +3,7 @@ import asyncio
 import asyncbg
 
 
-async def background_work():
+def background_work():
     print('Background sleep for 5 seconds.')
     time.sleep(5)
     print('Background sleep done.')
@@ -17,7 +17,7 @@ async def foreground_work():
 
 
 async def main():
-    await asyncio.gather(asyncbg.run(background_work()),
+    await asyncio.gather(asyncbg.call(background_work),
                          foreground_work())
 
 

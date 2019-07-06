@@ -18,7 +18,7 @@ Installation
 
 .. code-block:: python
 
-    pip install asyncbg
+   pip install asyncbg
 
 Examples
 ========
@@ -28,37 +28,37 @@ There are plenty of examples in the `examples folder`_.
 Default worker
 --------------
 
-Run ``main()`` in the default worker thread.
+Call ``work()`` in the default worker thread.
 
 .. code-block:: python
 
    import asyncio
    import asyncbg
 
-   async def work():
+   def work():
        pass
 
-   asyncio.run(asyncbg.run(work()))
+   asyncio.run(asyncbg.call(work))
 
 Worker pool
 -----------
 
-Create a worker pool with two worker threads, and run three coroutines
-in it (up to two coroutines in parallel).
+Create a worker pool with two worker threads, and call ``work()``
+three times in it (up to two callbacks called in parallel).
 
 .. code-block:: python
 
    import asyncio
    import asyncbg
 
-   async def work():
+   def work():
        pass
 
    async def main():
        pool = asyncbg.WorkerPool(2)
-       await asyncio.gather(pool.run(work()),
-                            pool.run(work()),
-                            pool.run(work()))
+       await asyncio.gather(pool.call(work),
+                            pool.call(work),
+                            pool.call(work))
 
    asyncio.run(main())
 
