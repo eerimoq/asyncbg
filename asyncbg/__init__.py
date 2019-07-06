@@ -15,6 +15,14 @@ class Worker(threading.Thread):
         self.loop.run_forever()
 
 
+def create_worker():
+    worker = Worker()
+    worker.daemon = True
+    worker.start()
+
+    return worker
+
+
 class WorkerPool:
     """The worker pool may only be used from a single asyncio loop. It is
     *not* thread safe.
@@ -25,10 +33,7 @@ class WorkerPool:
         self._workers = asyncio.Queue()
 
         for _ in range(number_of_workers):
-            worker = Worker()
-            worker.daemon = True
-            worker.start()
-            self._workers.put_nowait(worker)
+            self._workers.put_nowait(create_worker())
 
     async def run(self, coro):
         """Run given coroutine in the worker pool when a worker is available.
@@ -57,9 +62,7 @@ class WorkerPool:
 
 
 # The default worker.
-WORKER = Worker()
-WORKER.daemon = True
-WORKER.start()
+WORKER = create_worker()
 
 
 async def _wrapper(coro, loop, queue):
