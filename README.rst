@@ -25,21 +25,42 @@ Examples
 
 There are plenty of examples in the `examples folder`_.
 
-Run
----
+Default worker
+--------------
 
-Run ``main()`` in a worker thread.
+Run ``main()`` in the default worker thread.
 
 .. code-block:: python
 
    import asyncio
    import asyncbg
 
-   async def main():
+   async def work():
        pass
 
-   asyncio.run(asyncbg.run(main()))
+   asyncio.run(asyncbg.run(work()))
 
+Worker pool
+-----------
+
+Create a worker pool with two worker threads, and run three coroutines
+in it (up to two coroutines in parallel).
+
+.. code-block:: python
+
+   import asyncio
+   import asyncbg
+
+   async def work():
+       pass
+
+   async def main():
+       pool = asyncbg.WorkerPool()
+       await asyncio.gather(pool.run(work()),
+                            pool.run(work()),
+                            pool.run(work()))
+
+   asyncio.run(main())
 
 .. |buildstatus| image:: https://travis-ci.org/eerimoq/asyncbg.svg?branch=master
 .. _buildstatus: https://travis-ci.org/eerimoq/asyncbg
