@@ -21,7 +21,7 @@ WORKER.daemon = True
 WORKER.start()
 
 
-async def resume(future, queue):
+async def _resume(future, queue):
     try:
         result = future.result()
         exception = None
@@ -33,12 +33,18 @@ async def resume(future, queue):
 
 
 async def run(coro):
+    """Run given coroutine in the background thread. Returns the value
+    returned by the coroutine, or raises the exceptions raised by the
+    coroutine.
+
+    """
+
     future = asyncio.run_coroutine_threadsafe(coro, WORKER.loop)
     loop = asyncio.get_event_loop()
     queue = asyncio.Queue()
 
     def on_done(future):
-        asyncio.run_coroutine_threadsafe(resume(future, queue), loop).result()
+        asyncio.run_coroutine_threadsafe(_resume(future, queue), loop).result()
 
     future.add_done_callback(on_done)
 

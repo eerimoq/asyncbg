@@ -13,3 +13,5 @@ Asyncio background tasks
 
 Functions and classes
 =====================
+
+.. autofunction:: asyncbg.run
