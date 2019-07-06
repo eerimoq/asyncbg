@@ -7,9 +7,9 @@ from .version import __version__
 
 class Worker(threading.Thread):
 
-    def __init__(self, queue):
+    def __init__(self):
         super().__init__()
-        self.queue = queue
+        self.queue = Queue()
         
     def run(self):
         while True:
@@ -27,7 +27,7 @@ class Worker(threading.Thread):
 
 
 def create_worker():
-    worker = Worker(Queue())
+    worker = Worker()
     worker.daemon = True
     worker.start()
 
