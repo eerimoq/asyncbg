@@ -29,17 +29,21 @@ There are more examples in the `examples folder`_.
 Call
 ----
 
-Call ``work()`` in another process.
+Call ``work(a, b)`` in another process. The script output is ``Result: 9``.
 
 .. code-block:: python
 
    import asyncio
    import asyncbg
 
-   def work():
-       pass
+   def work(a, b):
+       return a + b
 
-   asyncio.run(asyncbg.call(work))
+   async def main():
+       result = await asyncbg.call(work, 4, 5)
+       print(f'Result: {result}')
+
+   asyncio.run(main())
 
 Pool
 ----
