@@ -49,7 +49,7 @@ class Pool(concurrent.futures.ThreadPoolExecutor):
         >>> def work():
         >>>     pass
         >>>
-        >>> pool = asyncbg.ThreadPoolExecutor()
+        >>> pool = asyncbg.Pool()
         >>> asyncio.run(pool.call(work))
 
         """
