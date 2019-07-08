@@ -25,11 +25,11 @@ class AsyncbgTest(unittest.TestCase):
         with self.assertRaises(Exception):
             await asyncbg.call(work)
 
-    def test_thread_pool_executor(self):
-        asyncio.run(self.thread_pool_executor())
+    def test_pool(self):
+        asyncio.run(self.pool())
 
-    async def thread_pool_executor(self):
-        pool = asyncbg.ThreadPoolExecutor()
+    async def pool(self):
+        pool = asyncbg.Pool()
 
         def work(value):
             return value

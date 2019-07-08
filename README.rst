@@ -28,7 +28,7 @@ There are more examples in the `examples folder`_.
 Call
 ----
 
-Call ``work()`` in a worker thread.
+Call ``work()`` in another process.
 
 .. code-block:: python
 
@@ -40,11 +40,11 @@ Call ``work()`` in a worker thread.
 
    asyncio.run(asyncbg.call(work))
 
-Thread pool executor
---------------------
+Pool
+----
 
-Create a thread pool executor with two worker threads, and call
-``work()`` three times in it (up to two callbacks called in parallel).
+Create a pool with two workers, and call ``work()`` three times in it
+(up to two callbacks called in parallel).
 
 .. code-block:: python
 
@@ -55,7 +55,7 @@ Create a thread pool executor with two worker threads, and call
        pass
 
    async def main():
-       pool = asyncbg.ThreadPoolExecutor(max_workers=2)
+       pool = asyncbg.Pool(max_workers=2)
        await asyncio.gather(pool.call(work),
                             pool.call(work),
                             pool.call(work))
