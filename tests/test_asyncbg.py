@@ -31,11 +31,11 @@ class AsyncbgTest(unittest.TestCase):
     async def pool(self):
         pool = asyncbg.Pool()
 
-        def work(value):
-            return value
+        def work(value_1, value_2=1):
+            return value_1 * value_2
 
         for i in range(10):
-            self.assertEqual(await pool.call(work, i), i)
+            self.assertEqual(await pool.call(work, i, value_2=i), i * i)
 
 
 if __name__ == '__main__':
