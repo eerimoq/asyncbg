@@ -35,8 +35,8 @@ class Pool(concurrent.futures.ThreadPoolExecutor):
     """
 
     async def call(self, callback, *args, **kwargs):
-        """Call given callback with given arguments in another process in the
-        worker pool when a worker is available.
+        """Coroutine calling given callback with given arguments in another
+        process in the worker pool, when a worker is available.
 
         Returns the value returned by the callback, or raises the
         exceptions raised by the callback.
@@ -70,7 +70,8 @@ _DEFAULT_POOL = Pool()
 
 
 async def call(callback, *args, **kwargs):
-    """Call given callback with given arguments in another process.
+    """Coroutine calling given callback with given arguments in
+    another process.
 
     Returns the value returned by the callback, or raises the
     exceptions raised by the callback.
