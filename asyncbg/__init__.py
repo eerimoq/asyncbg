@@ -12,8 +12,8 @@ class ProcessPoolExecutor(concurrent.futures.ProcessPoolExecutor):
     """
 
     async def call(self, callback, *args, **kwargs):
-        """Coroutine calling given callback with given arguments in another
-        process in the worker pool.
+        """Coroutine calling given callback with given arguments in a process
+        in the worker pool.
 
         Returns the value returned by the callback, or raises the
         exceptions raised by the callback.
@@ -47,7 +47,7 @@ async def call(callback, *args, **kwargs):
     Callback positional and keyword arguments can not be used for
     output, as the multiprocessing module does not support that.
 
-    Call ``work()`` in another process:
+    Call ``work()`` in a worker process:
 
     >>> def work():
     >>>     pass
