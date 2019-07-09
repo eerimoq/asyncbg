@@ -37,7 +37,7 @@ class ProcessPoolExecutor(concurrent.futures.ProcessPoolExecutor):
 _DEFAULT_POOL = ProcessPoolExecutor()
 
 
-async def call(callback, *args, **kwargs):
+def call(callback, *args, **kwargs):
     """Coroutine calling given callback with given arguments in
     another process.
 
@@ -56,4 +56,4 @@ async def call(callback, *args, **kwargs):
 
     """
 
-    return await _DEFAULT_POOL.call(callback, *args, **kwargs)
+    return _DEFAULT_POOL.call(callback, *args, **kwargs)
