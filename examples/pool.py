@@ -17,7 +17,7 @@ async def foreground_work():
 
 
 async def main():
-    pool = asyncbg.Pool(max_workers=4)
+    pool = asyncbg.ProcessPoolExecutor(max_workers=4)
     await asyncio.gather(pool.call(background_work),
                          pool.call(background_work),
                          pool.call(background_work),

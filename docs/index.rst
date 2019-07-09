@@ -16,4 +16,4 @@ Functions and classes
 
 .. autofunction:: asyncbg.call
 
-.. autoclass:: asyncbg.Pool
+.. autoclass:: asyncbg.ProcessPoolExecutor

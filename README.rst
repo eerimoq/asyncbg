@@ -45,11 +45,11 @@ Call ``work(a, b)`` in another process. The script output is ``Result: 9``.
 
    asyncio.run(main())
 
-Pool
-----
+Process pool
+------------
 
-Create a pool with two workers, and call ``work()`` three times in it
-(up to two callbacks called in parallel).
+Create a process pool with two workers, and call ``work()`` three
+times in it (up to two callbacks called in parallel).
 
 .. code-block:: python
 
@@ -60,7 +60,7 @@ Create a pool with two workers, and call ``work()`` three times in it
        pass
 
    async def main():
-       pool = asyncbg.Pool(max_workers=2)
+       pool = asyncbg.ProcessPoolExecutor(max_workers=2)
        await asyncio.gather(pool.call(work),
                             pool.call(work),
                             pool.call(work))
