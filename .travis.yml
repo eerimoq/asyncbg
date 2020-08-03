@@ -14,3 +14,16 @@ script:
 after_success:
   - coverage combine
   - coveralls
+
+before_deploy:
+  - git clean -dfx
+
+deploy:
+  provider: pypi
+  username: __token__
+  password:
+    secure: "XQ8AypeOOq6FPCVCCXUgJOH7DK3kg15dzsb9ixJwOwFgApozkSFsZ0XTq9/jV9qhhZ6hOaO5e3j6GBCwS9fbH3TJojDL1ZWONvauBd9RUBrNk05Mj21hMUzyVgwe4295CSdG8Tg1FsXgkn+CQ/s+v5AzUwbkstBtvuHgK/InoE+MAz3iv4rAwjPXtIKPyNvUS8adGFh/I+8DpHXDMgCip9TqdJYBC02nFTMwmGr1lw7zDuIIy+hFRtNabKUK3pV38NV1Cp8W7qbTJmvQzNnLukt+6nNwLPV3gra3F9VQTlnW/2aPX3EJ0FR/w3OUv8aLKoem0/7XPrkiSRtGySDau71TOQmuOqY+KKiBY0kHESNZMxsdeIynaBDXOi8vjsRoED/X9KAq4Lm+3/GIYWl/elaKooTLxkRhDf6vhS6JYqKoulCHkP/q02t6QfHdE+jMVKWmsZs5FuOyeAwHvKmfxv6EpvSD1EmDzUSd/CRCy5CDBvKm72BnFvnOEHi06SumWeV30P0KUtoIxqKKA50rufCPrewZw8f3lEkYzWo45CqyRMtAragfsGjnI3tQLUaUpTXHVs/Isx1kuxnfv4V7+r8pPTTFFkoqo6kDfI+BqwP8TLF7GDAfefnsLZQz+YCqQuRlINsijj1xljAufWwPE3OOrjBghzuiV/a5dzFGakM="
+  edge: true
+  skip_existing: true
+  on:
+    tags: true

@@ -1,6 +1,5 @@
 import asyncio
 import concurrent.futures
-import multiprocessing
 
 from .version import __version__
 
