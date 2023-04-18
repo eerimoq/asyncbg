@@ -1,5 +1,6 @@
 import asyncio
 import unittest
+import multiprocessing
 
 import asyncbg
 
@@ -14,6 +15,10 @@ def call_exception_work():
 
 def pool_work(value_1, value_2=1):
     return value_1 * value_2
+
+
+def call_other_process():
+    asyncio.run(asyncbg.call(print, None))
 
 
 class AsyncbgTest(unittest.TestCase):
@@ -39,6 +44,14 @@ class AsyncbgTest(unittest.TestCase):
 
         for i in range(10):
             self.assertEqual(await pool.call(pool_work, i, value_2=i), i * i)
+
+    def test_call_other_process(self):
+        asyncio.run(self.call_other_process())
+
+    async def call_other_process(self):
+        proc = multiprocessing.Process(target=call_other_process)
+        proc.start()
+        proc.join()
 
 
 if __name__ == '__main__':

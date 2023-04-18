@@ -33,10 +33,7 @@ class ProcessPoolExecutor(concurrent.futures.ProcessPoolExecutor):
         return await asyncio.wrap_future(self.submit(callback, *args, **kwargs))
 
 
-_DEFAULT_POOL = ProcessPoolExecutor()
-
-
-def call(callback, *args, **kwargs):
+async def call(callback, *args, **kwargs):
     """Coroutine calling given callback with given arguments in
     another process.
 
@@ -55,4 +52,5 @@ def call(callback, *args, **kwargs):
 
     """
 
-    return _DEFAULT_POOL.call(callback, *args, **kwargs)
+    with ProcessPoolExecutor() as pool:
+        return await pool.call(callback, *args, **kwargs)
