@@ -1,7 +1,7 @@
 .PHONY: test examples release-to-pypi
 
 test:
-	python3 setup.py test
+	pytest
 
 examples:
 	env PYTHONPATH=. python3 examples/call.py
