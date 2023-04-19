@@ -10,6 +10,8 @@ Run CPU intensive long running tasks without blocking the asyncio
 loop, implemented as a lightweight asyncio layer on top of the
 multiprocessing module.
 
+Alternatively run tasks in other threads.
+
 Project homepage: https://github.com/eerimoq/asyncbg
 
 Documentation: https://asyncbg.readthedocs.org/en/latest
@@ -60,10 +62,51 @@ times in it (up to two callbacks called in parallel).
        pass
 
    async def main():
-       pool = asyncbg.ProcessPoolExecutor(max_workers=2)
-       await asyncio.gather(pool.call(work),
-                            pool.call(work),
-                            pool.call(work))
+       with asyncbg.ProcessPoolExecutor(max_workers=2) as pool:
+           await asyncio.gather(pool.call(work),
+                                pool.call(work),
+                                pool.call(work))
+
+   asyncio.run(main())
+
+Call thread
+-----------
+
+Call ``work(a, b)`` in another thread. The script output is ``Result: 9``.
+
+.. code-block:: python
+
+   import asyncio
+   import asyncbg
+
+   def work(a, b):
+       return a + b
+
+   async def main():
+       result = await asyncbg.call_thread(work, 4, 5)
+       print(f'Result: {result}')
+
+   asyncio.run(main())
+
+Thread pool
+-----------
+
+Create a thread pool with two workers, and call ``work()`` three times
+in it (up to two callbacks called in parallel).
+
+.. code-block:: python
+
+   import asyncio
+   import asyncbg
+
+   def work():
+       pass
+
+   async def main():
+       with asyncbg.ThreadPoolExecutor(max_workers=2) as pool:
+           await asyncio.gather(pool.call(work),
+                                pool.call(work),
+                                pool.call(work))
 
    asyncio.run(main())
 
